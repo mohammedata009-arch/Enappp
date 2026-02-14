@@ -2,143 +2,104 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Adrenaline 100</title>
+    <title>English Adrenaline 100 - Mohamed Taha</title>
     <style>
-        :root { --red: #ff4757; --green: #2ed573; --dark: #1e1e2e; --accent: #3742fa; --gold: #ffa500; }
-        body { background-color: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
-        #app { background: #2d2d3d; padding: 1.5rem; border-radius: 20px; width: 90%; max-width: 500px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.7); border: 2px solid #444; position: relative;}
-        .screen { display: none; }
-        .active-screen { display: block; }
-        .btn { width: 100%; padding: 15px; margin: 8px 0; font-size: 1.1rem; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-green { background: var(--green); color: #1e1e2e; }
-        .btn-whatsapp { background: #25D366; color: white; }
-        .timer { font-size: 4rem; font-weight: 900; color: var(--red); text-shadow: 0 0 15px rgba(255, 71, 87, 0.4); }
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .opt-btn { background: #4b4b61; color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.2s; }
-        .opt-btn:hover { background: #575775; }
-        .id-badge { background: #3d3d5d; padding: 10px; border-radius: 8px; color: var(--green); margin: 10px 0; font-family: monospace; border: 1px dashed var(--green); }
-        input { width: 85%; padding: 12px; border-radius: 8px; border: none; margin-top: 10px; text-align: center; font-size: 1.1rem; background: #eee; }
-        .shake { animation: shake-anim 0.3s; }
-        @keyframes shake-anim { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+        body { background: #1a1a2e; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
+        .box { background: #16213e; padding: 20px; border-radius: 15px; max-width: 400px; margin: auto; border: 2px solid #0f3460; }
+        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-green { background: #27ae60; color: white; }
+        .btn-wa { background: #25D366; color: white; }
+        .timer { font-size: 50px; color: #e94560; font-weight: bold; }
+        #lock-screen, #game { display: none; }
+        input { width: 90%; padding: 10px; margin: 10px 0; text-align: center; }
     </style>
 </head>
 <body>
 
-<div id="app">
-    <div id="start-screen" class="screen active-screen">
-        <h2 style="color:var(--gold)">English Adrenaline 100</h2>
-        <p>You have <strong style="color:var(--red)">10 SECONDS</strong> free trial!</p>
-        <button class="btn btn-green" onclick="startApp()">START TRIAL</button>
-    </div>
+<div class="box" id="start">
+    <h2>English Adrenaline 🚀</h2>
+    <p>You have 10 seconds to start!</p>
+    <button class="btn btn-green" onclick="startTrial()">START FREE TRIAL</button>
+</div>
 
-    <div id="game-area" class="screen">
-        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 5px;">
-            <span id="q-counter">Q: 1/100</span>
-            <span id="score-display">Score: 0</span>
-        </div>
-        <div id="timer-display" class="timer">10</div>
-        <div id="question-text" style="font-size: 1.3rem; min-height: 70px; margin: 15px 0; font-weight: bold;"></div>
-        <div id="options-container" class="options-grid"></div>
-    </div>
+<div class="box" id="game">
+    <div class="timer" id="time">10</div>
+    <div id="q-text" style="font-size: 20px; margin: 20px 0;"></div>
+    <div id="options"></div>
+</div>
 
-    <div id="lock-screen" class="screen">
-        <h2 style="color: var(--red);">TRIAL ENDED! 🛑</h2>
-        <p>Unlock 100 Interactive Questions & Remove Timer</p>
-        <div class="id-badge" id="dev-id">...</div>
-        <button class="btn btn-whatsapp" onclick="contactMohamed()">SEND ID TO WHATSAPP</button>
-        <input type="text" id="activation-input" placeholder="Enter Activation Code">
-        <button class="btn btn-green" onclick="verify()">ACTIVATE NOW</button>
-    </div>
+<div class="box" id="lock-screen">
+    <h2 style="color: #e94560;">TRIAL ENDED! 🛑</h2>
+    <p>Get 100 Questions & Unlimited Time</p>
+    <div id="dev-id" style="background: #0f3460; padding: 10px; margin: 10px 0; font-family: monospace;"></div>
+    <button class="btn btn-wa" onclick="toWA()">ACTIVATE VIA WHATSAPP</button>
+    <input type="text" id="code-in" placeholder="Enter Code">
+    <button class="btn btn-green" onclick="unlock()">ACTIVATE</button>
 </div>
 
 <script>
-    const myNum = "249999240574";
-    const deviceID = "AT-" + Math.floor(1000 + Math.random() * 8999);
-    document.getElementById('dev-id').innerText = deviceID;
+    const myPhone = "249999240574";
+    const devID = "MT" + Math.floor(Math.random() * 9000);
+    document.getElementById('dev-id').innerText = devID;
 
     let timeLeft = 10;
-    let score = 0;
     let currentIdx = 0;
-    let timer;
-    let isActivated = false;
+    let isLive = false;
 
-    // تم دمج 100 سؤال (نماذج متنوعة لضمان التفاعل)
-    const questions = [
-        {q: "I ___ to the gym every day.", a: ["go", "goes", "going", "gone"], c: 0},
-        {q: "She ___ a doctor.", a: ["am", "is", "are", "be"], c: 1},
-        {q: "What is the plural of 'Mouse'?", a: ["Mouses", "Mice", "Mices", "Mousees"], c: 1},
-        {q: "Opposite of 'Near'?", a: ["Close", "Far", "Next", "Beside"], c: 1},
-        {q: "Past tense of 'Buy'?", a: ["Buyed", "Bought", "Buying", "Bins"], c: 1},
-        {q: "Look! It ___ now.", a: ["rain", "rains", "is raining", "rained"], c: 2},
-        {q: "He is afraid ___ dogs.", a: ["of", "from", "at", "to"], c: 0},
-        {q: "I haven't seen him ___ Monday.", a: ["for", "since", "at", "in"], c: 1},
-        {q: "Which one is a fruit?", a: ["Onion", "Apple", "Potato", "Bread"], c: 1},
-        {q: "Which word is a verb?", a: ["Happy", "Eat", "Book", "Red"], c: 1}
-    ];
-    // توليد 90 سؤالاً إضافياً برمجياً لملء القائمة (يمكنك استبدالها لاحقاً)
-    for(let i=11; i<=100; i++) {
-        questions.push({q: `Advanced Quiz Level ${i}: Choose the correct word.`, a: ["Correct", "Wrong", "Maybe", "None"], c: 0});
+    // بنك الـ 100 سؤال (نماذج)
+    const questions = [];
+    for(let i=1; i<=100; i++) {
+        questions.push({
+            q: `Question ${i}: What is the correct English for 'مرحباً'?`,
+            a: ["Hello", "Bye", "Sun", "Car"],
+            c: 0
+        });
     }
 
-    function startApp() {
-        show('game-area');
+    function startTrial() {
+        document.getElementById('start').style.display = 'none';
+        document.getElementById('game').style.display = 'block';
         loadQ();
-        timer = setInterval(() => {
-            if(!isActivated) {
+        let timer = setInterval(() => {
+            if(!isLive) {
                 timeLeft--;
-                document.getElementById('timer-display').innerText = timeLeft;
-                if(timeLeft <= 0) { clearInterval(timer); show('lock-screen'); }
-            } else {
-                document.getElementById('timer-display').innerText = "∞";
-                document.getElementById('timer-display').style.color = "var(--green)";
+                document.getElementById('time').innerText = timeLeft;
+                if(timeLeft <= 0) {
+                    clearInterval(timer);
+                    document.getElementById('game').style.display = 'none';
+                    document.getElementById('lock-screen').style.display = 'block';
+                }
             }
         }, 1000);
     }
 
     function loadQ() {
-        if(currentIdx >= questions.length) { alert("Amazing! 100/100 Done."); return; }
-        document.getElementById('q-counter').innerText = `Q: ${currentIdx + 1}/100`;
-        const qData = questions[currentIdx];
-        document.getElementById('question-text').innerText = qData.q;
-        const container = document.getElementById('options-container');
-        container.innerHTML = '';
-        qData.a.forEach((opt, i) => {
+        const q = questions[currentIdx];
+        document.getElementById('q-text').innerText = q.q;
+        const optDiv = document.getElementById('options');
+        optDiv.innerHTML = '';
+        q.a.forEach((opt, i) => {
             const b = document.createElement('button');
-            b.className = 'opt-btn'; b.innerText = opt;
-            b.onclick = () => check(i);
-            container.appendChild(b);
+            b.className = 'btn'; b.style.background = '#0f3460'; b.style.color = 'white';
+            b.innerText = opt;
+            b.onclick = () => { currentIdx++; loadQ(); };
+            optDiv.appendChild(b);
         });
     }
 
-    function check(i) {
-        if(i === questions[currentIdx].c) {
-            score += 10;
-            document.getElementById('score-display').innerText = `Score: ${score}`;
-            currentIdx++;
-            loadQ();
-        } else {
-            document.getElementById('app').classList.add('shake');
-            setTimeout(() => document.getElementById('app').classList.remove('shake'), 300);
-        }
+    function toWA() {
+        const msg = `Hi Mohamed Taha, I want to activate ID: ${devID}1998`;
+        window.open(`https://wa.me/${myPhone}?text=${encodeURIComponent(msg)}`);
     }
 
-    function contactMohamed() {
-        const msg = `Hello Mohamed Taha, Activate my device ID: ${deviceID}1998`;
-        window.open(`https://wa.me/${myNum}?text=${encodeURIComponent(msg)}`, '_blank');
-    }
-
-    function verify() {
-        if(document.getElementById('activation-input').value === deviceID + "1998") {
-            isActivated = true;
-            alert("Unlocked! Time is now UNLIMITED.");
-            show('game-area');
-        } else { alert("Invalid Key!"); }
-    }
-
-    function show(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
-        document.getElementById(id).classList.add('active-screen');
+    function unlock() {
+        if(document.getElementById('code-in').value === devID + "1998") {
+            isLive = true;
+            document.getElementById('lock-screen').style.display = 'none';
+            document.getElementById('game').style.display = 'block';
+            document.getElementById('time').innerText = "∞";
+            alert("Unlimited Mode Unlocked!");
+        } else { alert("Wrong Code!"); }
     }
 </script>
 </body>
