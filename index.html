@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>English Adrenaline - Trial Version</title>
+    <style>
+        :root { --red: #ff4757; --green: #2ed573; --dark: #1e1e2e; --accent: #3742fa; --gold: #ffa500; }
+        body { background-color: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        #app { background: #2d2d3d; padding: 1.5rem; border-radius: 20px; width: 480px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.7); border: 2px solid #444; }
+        .screen { display: none; }
+        .active-screen { display: block; }
+        .btn { width: 100%; padding: 15px; margin: 8px 0; font-size: 1.1rem; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-green { background: var(--green); color: #1e1e2e; }
+        .btn-whatsapp { background: #25D366; color: white; }
+        .timer { font-size: 3.5rem; font-weight: 900; color: var(--green); }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .opt-btn { background: #4b4b61; color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .id-badge { background: #3d3d5d; padding: 10px; border-radius: 8px; color: var(--green); margin: 10px 0; font-family: monospace; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div id="trial-screen" class="screen active-screen">
+        <h2>Welcome to English Challenge</h2>
+        <p>You have <strong style="color:var(--gold)">1 Minute</strong> Free Trial!</p>
+        <button class="btn btn-green" onclick="startTrial()">START FREE TRIAL</button>
+    </div>
+
+    <div id="game-area" class="screen">
+        <div id="timer-display" class="timer">60</div>
+        <div id="question-text" style="font-size: 1.2rem; min-height: 60px; margin: 15px 0;"></div>
+        <div id="options-container" class="options-grid"></div>
+    </div>
+
+    <div id="lock-screen" class="screen">
+        <h2 style="color: var(--red);">TRIAL EXPIRED! 🛑</h2>
+        <p>To continue learning and unlock 100+ levels, please activate the app.</p>
+        <p>Your Device ID:</p>
+        <div class="id-badge" id="device-id-display">...</div>
+        <button class="btn btn-whatsapp" onclick="sendToWhatsapp()">ACTIVATE VIA WHATSAPP</button>
+        <input type="text" id="activation-code" placeholder="Enter Activation Code" style="width:80%; padding:10px; margin-top:10px; border-radius:5px;">
+        <button class="btn btn-green" onclick="checkActivation()">SUBMIT CODE</button>
+    </div>
+</div>
+
+<script>
+    const myPhone = "249999240574"; // رقمك بالصيغة الدولية
+    const deviceID = "MT-" + Math.floor(1000 + Math.random() * 9000);
+    document.getElementById('device-id-display').innerText = deviceID;
+
+    let timeLeft = 60; // دقيقة واحدة مجانية
+    let timerInt;
+    let currentQ = 0;
+
+    const questions = [
+        {q: "I ___ happy.", a: ["am", "is", "are", "be"], c: 0},
+        {q: "Plural of 'Man'?", a: ["Mans", "Men", "Mens", "Manes"], c: 1},
+        {q: "Opposite of 'Go'?", a: ["Stop", "Come", "Run", "Fast"], c: 1}
+    ];
+
+    function startTrial() {
+        showScreen('game-area');
+        loadQuestion();
+        timerInt = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-display').innerText = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(timerInt);
+                showScreen('lock-screen');
+            }
+        }, 1000);
+    }
+
+    function loadQuestion() {
+        const q = questions[currentQ % questions.length];
+        document.getElementById('question-text').innerText = q.q;
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        q.a.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'opt-btn'; btn.innerText = opt;
+            btn.onclick = () => { currentQ++; loadQuestion(); };
+            container.appendChild(btn);
+        });
+    }
+
+    function sendToWhatsapp() {
+        const message = `Hello, I want to activate my app. My Device ID is: ${deviceID}1998`;
+        const url = `https://wa.me/${myPhone}?text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
+    }
+
+    function checkActivation() {
+        const code = document.getElementById('activation-code').value;
+        if (code === deviceID + "1998") {
+            alert("Success! App Permanently Unlocked.");
+            timeLeft = 99999; // فتح الوقت للأبد
+            showScreen('game-area');
+        } else {
+            alert("Invalid Code!");
+        }
+    }
+
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+        document.getElementById(id).classList.add('active-screen');
+    }
+</script>
+</body>
+</html>
